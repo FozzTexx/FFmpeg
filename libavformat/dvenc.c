@@ -124,7 +124,7 @@ static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* bu
                  (c->sys->dsf << 5) | /*  system: 60fields/50fields */
                  (c->sys->n_difchan & 2); /* definition: 0 -- 25Mbps, 2 -- 50Mbps */
         buf[4] = (1 << 7) | /* emphasis: 1 -- off */
-                 (0 << 6) | /* emphasis time constant: 0 -- reserved */
+                 (1 << 6) | /* emphasis time constant: 0 -- reserved */
                  (audio_type << 3) | /* frequency: 0 -- 48kHz, 1 -- 44,1kHz, 2 -- 32kHz */
                   0;        /* quantization: 0 -- 16-bit linear, 1 -- 12-bit nonlinear */
 
@@ -140,7 +140,8 @@ static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* bu
                  (1 << 3) | /* recording mode: 1 -- original */
                   7;
         buf[3] = (1 << 7) | /* direction: 1 -- forward */
-                 (c->sys->pix_fmt == AV_PIX_FMT_YUV420P ? 0x20 : /* speed */
+                 (c->sys->pix_fmt == AV_PIX_FMT_YUV420P ||
+		  c->sys->pix_fmt == AV_PIX_FMT_YUV411P ? 0x20 : /* speed */
                                                        c->sys->ltc_divisor * 4);
         buf[4] = (1 << 7) | /* reserved -- always 1 */
                   0x7f;     /* genre category */
